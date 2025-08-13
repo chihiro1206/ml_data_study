@@ -23,7 +23,6 @@ model.fit(X_train, y_train)
 # テストデータを使って予想させる
 y_pred = model.predict(X_test)
 
-
 # 正解率を計算
 accuracy = accuracy_score(y_test, y_pred)
 print(f"学習量10%正解率: {accuracy * 100:.2f}%")
