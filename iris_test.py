@@ -1,29 +1,33 @@
 from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.tree import plot_tree
-from sklearn.datasets import load_iris
-from sklearn.neural_network import MLPClassifier
-import matplotlib.pyplot as plt
+
 
 iris = load_iris()
-X = iris.data       # 特徴（花の長さなど）
-y = iris.target     # 答え（花の種類）
+X = iris.data
+y = iris.target
 
-# データを「学習用」と「テスト用」に分ける
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9)
+# テストデータの固定　ここで学習データとテストは分離する
+X_train_full, X_test, y_train_full, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
 
-# 決定木モデルを作る
+# 上で分離した学習データの中からさらに学習に使う割合を指定する
+train_frac = 0.6  
+
+
+sss = StratifiedShuffleSplit(n_splits=1, train_size=train_frac, random_state=0)
+for train_idx, _ in sss.split(X_train_full, y_train_full):
+    X_train = X_train_full[train_idx]
+    y_train = y_train_full[train_idx]
+
+# モデル学習
 model = DecisionTreeClassifier()
-
-# 学習用データで学習
 model.fit(X_train, y_train)
 
-# テストデータを使って予想させる
+# 固定テストデータで予測・評価
 y_pred = model.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
 
-# 正解率を計算
-accuracy = accuracy_score(y_test, y_pred)
-print(f"学習量10%正解率: {accuracy * 100:.2f}%")
-
+print(f"学習割合{int(train_frac*100)}%のとき正解率: {acc*100:.2f}%")
