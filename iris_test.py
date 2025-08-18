@@ -3,9 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.tree import plot_tree
-from sklearn.datasets import load_iris
-from sklearn.neural_network import MLPClassifier
-import matplotlib.pyplot as plt
+
 
 iris = load_iris()
 X = iris.data       # 特徴（花の長さなど）
